@@ -2,8 +2,8 @@
 #include <stdio.h>
 
 /// argumentos para funcionar o OpenGL
-/// -lopengl32 -glu32 -lfreeglut
-/// -lGL -lglut -lGLU   -> gcc main.c -o main.exe -lGL -lglut -lGLU
+/// -lopengl32 -glu32 -lfreeglut    <- windowns
+/// -lGL -lglut -lGLU   -> gcc main.c -o main.exe -lGL -lglut -lGLU     <- linux
 
 int init(void){
 
@@ -11,9 +11,9 @@ int init(void){
     glEnable(GL_DEPTH_TEST);            /// habilitao teste de profundidade
 
     //glMatrixMode(GL_MODELVIEW);         // carrega a matriz de projeção
-    glMatrixMode(GL_PROJECTION);            // carrega a matriz de projeção
+    glMatrixMode(GL_PROJECTION);        /// carrega a matriz de projeção para criar a janela de recorte e a view port
     glLoadIdentity();                   /// carrega a matrix de identidade
-    //gluOrtho2D(0.0,100.0,0.0,100.0);  // define projeção ortogonal 2D
+    gluOrtho2D(-1.5, 1.72, -1.5, 1.5);  /// define a janela de recorte
 
     /*gluLookAt(4.0, 2.0, 2.0,    //posição da câmera
               0.0, 0.0, 0.0,    //para onde a câmera aponta
@@ -22,22 +22,15 @@ int init(void){
     //glMatrixMode(GL_PROJECTION);         // carrega a matriz de projeção
     //glLoadIdentity();
     //gluPerspective(45.0, 1.0, 0.1, 10.0);
-    glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);   /// definindo a janela de recorte
-    glMatrixMode(GL_MODELVIEW);         // carrega a matriz de projeção
-    glLoadIdentity();
 
-    glColor3f(1.0f, 0.0f, 0.0f);            //alterao atributo de cor
-
-    /*criaViewPortProjecao(0, 800, 400, 400);
-    criaViewPortProjecao(0, 400, 400, 0);
-    criaViewPortProjecao(400, 400, 800, 800);
-    criaViewPortProjecao(400, 400, 800, 0);*/
-
+    //glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);   /// definindo a janela de recorte
 }
 
-void criaViewPortProjecao(int p1, int p2, int p3, int p4){
-    glViewport(p1, p2, p3, p4);     /// define a primeira viewport
-    glOrtho(-3, 3, -3, 3, 1, 50);   /// projecao ortogonal
+void criaViewPortProjecao(int xvmin, int yvmin){
+    glLoadIdentity();                   /// carregando a matriz identidade para a nova operacao
+    glViewport(xvmin, yvmin, 400, 400); /// define a primeira viewport
+    //posicaoCamera();
+    //glOrtho(-3, 3, -3, 3, 1, 50);       /// projecao ortogonal
 }
 
 void posicaoCamera(){
@@ -48,11 +41,17 @@ void posicaoCamera(){
 
 }
 
-void criaProjecoesOrtogonais(){
-    glOrtho(-3, 3, -3, 3, 1, 50);   /// superior esquerdo
-    glOrtho(-3, 3, -3, 3, 1, 50);   /// superior direito
-    glOrtho(-3, 3, -3, 3, 1, 50);   /// inferior esquerdo
-    ///glOrtho(-3, 3, -3, 3, 1, 50);   /// inferior direito
+void criaViewPort(){
+    glLoadIdentity();
+    criaViewPortProjecao(000, 400);     /// superior esquerdo
+    criaViewPortProjecao(400, 400);     /// superior direito
+    criaViewPortProjecao(000, 000);     /// inferior esquerdo
+    criaViewPortProjecao(400, 000);     /// inferior direito
+    /*
+    criaViewPortProjecao(0, 400, 400, 400);     /// superior esquerdo
+    criaViewPortProjecao(0, 400, 400, 400);       /// superior direito
+    criaViewPortProjecao(0, 0, 400, 400);   /// inferior esquerdo
+    criaViewPortProjecao(400, 400, 400, 400);     /// inferior direito*/
 }
 
 void display(void){
@@ -61,8 +60,9 @@ void display(void){
     glMatrixMode(GL_MODELVIEW);     /// carrega a matriz modelo
 
      // desenha  um  TeaPot
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glutWireTeapot(1.0f);
+    criaViewPort();                 /// cria as viewport
+    glColor3f(1.0f, 0.8f, 0.0f);    /// altera a cor para dourado
+    glutWireTeapot(1.0f);           /// desenha o bule
 
     glFlush();      // desenha os comandos não executados
 }
