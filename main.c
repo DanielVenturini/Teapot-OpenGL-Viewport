@@ -21,26 +21,31 @@ void criaViewPortProjecao(int xvmin, int yvmin){
 
     glMatrixMode(GL_PROJECTION);        /// para criar projecoes ortogonal
     glOrtho(-3, 3, -3, 3, 1, 50);       /// cria projecao ortogonal
-
-    posicaoCamera();
-    glutWireTeapot(0.6f);               /// desenha o bule
 }
 
-void posicaoCamera(){
+void posicaoCamera(float x0, float y0, float z0, float vx, float vy, float vz){
     glLoadIdentity();                   /// carregando a matriz identidade para a nova operacao
 
     glMatrixMode(GL_MODELVIEW); /// modelo de visao
-    gluLookAt(0.0, 0.0, 1.0,    ///posição da câmera
+    gluLookAt( x0,  y0,  z0,    ///posição da câmera
               0.0, 0.0, 0.0,    /// camera apontando para a origem
-              0.0, 1.0, 0.0);   /// eixo - x, y, z - de visao da camera
+               vx,  vy,  vz);   /// eixo - x, y, z - de visao da camera
 
+    glutWireTeapot(0.6f);               /// desenha o bule
 }
 
 void criaViewPort(){
     criaViewPortProjecao(000, 400);     /// superior esquerdo
+    posicaoCamera(0.0, 1.0, 0.0, 0.0, 0.0, -1.0);
+
     criaViewPortProjecao(400, 400);     /// superior direito
+    posicaoCamera(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
     criaViewPortProjecao(000, 000);     /// inferior esquerdo
+    posicaoCamera(0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
+
     criaViewPortProjecao(400, 000);     /// inferior direito
+    posicaoCamera(0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
 }
 
 void display(void){
