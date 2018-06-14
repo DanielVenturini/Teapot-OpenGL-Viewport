@@ -5,6 +5,8 @@
 /// -lopengl32 -glu32 -lfreeglut    <- windowns
 /// -lGL -lglut -lGLU   -> gcc main.c -o main.exe -lGL -lglut -lGLU     <- linux
 
+static GLfloat spin = 0.0;
+
 int init(void){
 
     glClearColor(1.0, 1.0, 1.0, 0.0);   // define a cor de fundo
@@ -16,22 +18,34 @@ int init(void){
 }
 
 void criaViewPortProjecao(int xvmin, int yvmin){
-    glLoadIdentity();                   /// carregando a matriz identidade para a nova operacao
     glViewport(xvmin, yvmin, 400, 400); /// define a viewport
 
     glMatrixMode(GL_PROJECTION);        /// para criar projecoes ortogonal
+    glLoadIdentity();                   /// carregando a matriz identidade para a nova operacao
     glOrtho(-3, 3, -3, 3, 1, 50);       /// cria projecao ortogonal
+
+    //glMatrixMode(GL_MODELVIEW);
 }
 
 void posicaoCamera(float x0, float y0, float z0, float vx, float vy, float vz){
-    glLoadIdentity();                   /// carregando a matriz identidade para a nova operacao
+    //glMatrixMode(GL_MODELVIEW); /// modelo de visao
 
-    glMatrixMode(GL_MODELVIEW); /// modelo de visao
-    gluLookAt( x0,  y0,  z0,    ///posição da câmera
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();           /// carregando a matriz identidade para a nova operacao
+    gluLookAt( x0,  y0,  z0,    /// posição da câmera
               0.0, 0.0, 0.0,    /// camera apontando para a origem
                vx,  vy,  vz);   /// eixo - x, y, z - de visao da camera
 
-    glutWireTeapot(0.6f);               /// desenha o bule
+    glRotatef(spin, 1.0, 0.0, 0.0);
+    glutWireTeapot(2.0f);               /// desenha o bule
+}
+
+void spinDisplay(void){
+   spin = spin + 0.05;
+   if (spin > 360.0)
+      spin = spin - 360.0;
+   glutPostRedisplay();
 }
 
 void criaViewPort(){
@@ -52,9 +66,11 @@ void display(void){
 
     glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT);    // desenha o fundo (limpa a janela)
     glMatrixMode(GL_MODELVIEW);     /// carrega a matriz modelo
+    glLoadIdentity();
 
     glColor3f(1.0f, 0.8f, 0.0f);    /// altera a cor para dourado
     criaViewPort();                 /// cria as viewport
+    //glRotatef(spin, 0.0, 1.0, 0.0);
 
     glFlush();      // desenha os comandos não executados
 }
@@ -67,10 +83,10 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(200, 200);
     glutCreateWindow("Teapot In OpenGL by Venturini");  ///cria a janela de exibição
 
-    init();                                             // executa função de inicialização
-
+    glutIdleFunc(spinDisplay);
     glutDisplayFunc(display);           // estabelece a função "display" como a função callback de exibição.
+
+    init();                                             // executa função de inicialização
     glutMainLoop();                     // mostre tudo e espere
     return 0;
 }
-
