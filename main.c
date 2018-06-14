@@ -27,7 +27,7 @@ void criaViewPortProjecao(int xvmin, int yvmin){
     //glMatrixMode(GL_MODELVIEW);
 }
 
-void posicaoCamera(float x0, float y0, float z0, float vx, float vy, float vz){
+void posicaoCamera(float x0, float y0, float z0, float vx, float vy, float vz, int vnumber){
     //glMatrixMode(GL_MODELVIEW); /// modelo de visao
 
 
@@ -37,7 +37,10 @@ void posicaoCamera(float x0, float y0, float z0, float vx, float vy, float vz){
               0.0, 0.0, 0.0,    /// camera apontando para a origem
                vx,  vy,  vz);   /// eixo - x, y, z - de visao da camera
 
-    glRotatef(spin, 1.0, 0.0, 0.0);
+    if(vnumber == 4){
+        glRotatef(spin, 1.0, 0.0, 0.0);
+    }
+
     glutWireTeapot(2.0f);               /// desenha o bule
 }
 
@@ -50,16 +53,16 @@ void spinDisplay(void){
 
 void criaViewPort(){
     criaViewPortProjecao(000, 400);     /// superior esquerdo
-    posicaoCamera(0.0, 1.0, 0.0, 0.0, 0.0, -1.0);
+    posicaoCamera(0.0, 1.0, 0.0, 0.0, 0.0, -1.0, 1);    /// ultimo parametro eh o numero da viewport
 
     criaViewPortProjecao(400, 400);     /// superior direito
-    posicaoCamera(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    posicaoCamera(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
 
     criaViewPortProjecao(000, 000);     /// inferior esquerdo
-    posicaoCamera(0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
+    posicaoCamera(0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 3);
 
     criaViewPortProjecao(400, 000);     /// inferior direito
-    posicaoCamera(0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
+    posicaoCamera(0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 4);
 }
 
 void display(void){
