@@ -45,19 +45,24 @@ void posicaoCamera(float x0, float y0, float z0, float vx, float vy, float vz, i
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        glRotatef(45, 1.0, 0.0, 0.0);       /// rotacionando em 45 graus no eixo x
-        glRotatef(spin, 0.0, 0.0, 1.0);     /// rotacionando em <spin> graus no eixo z
+        float valorF = spin;
+        int valorI = valorF;
+        int graus = valorI % 365;
 
-        sizeTeaPoat = 0.5;
+        glRotatef(spin, 0.0, 0.0, 1.0);         /// rotacionando em <spin> graus no eixo z
+        glRotatef(graus, 1.0, 0.0, 0.0);        /// rotacionando em 45 graus no eixo x
+        //glRotatef(45, 1.0, 0.0, 0.0);         /// rotacionando em 45 graus no eixo x
+
+        sizeTeaPoat = 0.6;
     }
 
     glutWireTeapot(sizeTeaPoat);               /// desenha o bule
 }
 
 void spinDisplay(void){
-   spin = spin + 0.5;
+   spin = spin + 0.4;
    if (spin > 360.0)
-      spin = spin - 360.0;
+      spin = 0;
 
    glutPostRedisplay();
 }
